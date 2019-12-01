@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,7 +7,10 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   Keyboard,
-  Alert
+  Alert,
+  Dimensions,
+  ScrollView,
+  KeyboardAvoidingView
 } from "react-native";
 import styled from "styled-components";
 import Card from "../element/Card";
@@ -23,6 +26,21 @@ const StartGameScreen = props => {
   const [entered, setEntered] = useState("");
   const [userConfirmed, setUserConfirmed] = useState(false);
   const [selectedNumber, setSelectedNumber] = useState();
+  const [buttonDimensions, setButtonDimensions] = useState(
+    Dimensions.get("window").width / 4
+  );
+
+  useEffect(() => {
+    const updateLayout = () => {
+      setButtonDimensions(Dimensions.get("window").width / 4);
+    };
+
+    Dimensions.addEventListener("change", updateLayout);
+
+    return () => {
+      Dimensions.removeEventListener("change", updateLayout);
+    };
+  });
 
   const numberInputHandler = inputText => {
     setEntered(inputText.toString().replace(/[^0-9]/g, ""));
@@ -64,39 +82,46 @@ const StartGameScreen = props => {
   }
 
   return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <Container>
-        <TextS>Start a New Game!</TextS>
-        <Card style={style.card}>
-          <BodyText>Select a Number</BodyText>
-          <Input
-            placeholder="##"
-            style={style.input}
-            blurOnSubmit
-            autoCapitilize="none"
-            autoCorrect={false}
-            keyboardType="number-pad"
-            maxLength={2}
-            value={entered}
-            onChangeText={numberInputHandler}
-          />
-          <ButtonContainer>
-            <ButtonS>
-              <SecondaryButton
-                onPress={resetInputHandler}
-                disabled={entered === ""}
-              >
-                Reset
-              </SecondaryButton>
-            </ButtonS>
-            <ButtonS>
-              <MainButton onPress={startGameHandler}>Confirm</MainButton>
-            </ButtonS>
-          </ButtonContainer>
-        </Card>
-        {confirmedOutput}
-      </Container>
-    </TouchableWithoutFeedback>
+    <ScrollView>
+      <KeyboardAvoidingView
+        behavior="position"
+        // keyboardVerticalOffset={32}
+      >
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+          <Container>
+            <TextS>Start a New Game!</TextS>
+            <Card style={style.card}>
+              <BodyText>Select a Number</BodyText>
+              <Input
+                placeholder="##"
+                style={style.input}
+                blurOnSubmit
+                autoCapitilize="none"
+                autoCorrect={false}
+                keyboardType="number-pad"
+                maxLength={2}
+                value={entered}
+                onChangeText={numberInputHandler}
+              />
+              <ButtonContainer>
+                <ButtonS style={{ buttonDimensions }}>
+                  <SecondaryButton
+                    onPress={resetInputHandler}
+                    disabled={entered === ""}
+                  >
+                    Reset
+                  </SecondaryButton>
+                </ButtonS>
+                <ButtonS style={{ buttonDimensions }}>
+                  <MainButton onPress={startGameHandler}>Confirm</MainButton>
+                </ButtonS>
+              </ButtonContainer>
+            </Card>
+            {confirmedOutput}
+          </Container>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </ScrollView>
   );
 };
 
@@ -118,18 +143,22 @@ const style = StyleSheet.create({
 
 const Container = styled.View`
   flex: 1;
-  padding: 10%;
+  padding: 24px;
   align-items: center;
+  justify-content: center;
 `;
 
 const TextS = styled.Text`
   font-size: 20px;
-  margin: 10px auto;
+  margin-bottom: 16px;
+  text-align: center;
   font-family: "poppins_bold";
 `;
 
 const ButtonContainer = styled.View`
-  flex-direction: row;
+  flex-direction: ${Dimensions.get("window").height > 600
+    ? "row"
+    : "column-reverse"};
   width: 100%;
   justify-content: space-between;
   padding: 0px 16px;
@@ -137,5 +166,6 @@ const ButtonContainer = styled.View`
 `;
 
 const ButtonS = styled.View`
-  width: 48%;
+  /* width: ${Dimensions.get("window").height > 600 ? "48%" : "100%"}; */
+  margin-bottom: ${Dimensions.get("window").height > 600 ? "0px" : "16px"};
 `;

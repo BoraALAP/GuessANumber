@@ -1,19 +1,29 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableNativeFeedback, Platform } from "react-native";
 import styled from "styled-components";
 import colors from "../../constants/colors";
 
 const MainButton = props => {
   return (
-    <TouchableOpacity onPress={props.onPress} disabled={props.disabled}>
-      <Container>
-        <TextS>{props.children}</TextS>
-      </Container>
-    </TouchableOpacity>
+    <ViewButton>
+      <TouchableNativeFeedback
+        onPress={props.onPress}
+        disabled={props.disabled}
+      >
+        <Container>
+          <TextS>{props.children}</TextS>
+        </Container>
+      </TouchableNativeFeedback>
+    </ViewButton>
   );
 };
 
 export default MainButton;
+
+const ViewButton = styled.View`
+  border-radius: 24px;
+  overflow: hidden;
+`;
 
 const Container = styled.View`
   background-color: ${props => (props.disabled ? colors.gray : colors.primary)};

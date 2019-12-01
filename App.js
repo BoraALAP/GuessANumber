@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, SafeAreaView, StyleSheet } from "react-native";
 import styled from "styled-components";
 
 import Header from "./components/layout/Header";
@@ -74,7 +74,7 @@ const App = () => {
 
 export default App;
 
-const AppContainer = styled.View`
+const AppContainer = styled.SafeAreaView`
   flex: 1;
   font-family: "poppins";
 `;

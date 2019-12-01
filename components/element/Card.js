@@ -20,7 +20,8 @@ const style = StyleSheet.create({
     shadowColor: Colors.primary,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
-    shadowRadius: 4
+    shadowRadius: 4,
+    position: "relative"
   }
 });
 
